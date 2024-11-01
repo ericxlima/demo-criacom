@@ -1,0 +1,11 @@
+torch==2.5.0+cu121
+torchaudio==2.5.0+cu121
+torchvision==0.20.0+cu121
+cuda-python==12.1.0
+controlnet_aux==0.0.9
+accelerate==1.1.0
+transformers==4.46.1
+diffusers==0.31.0
+opencv-python==4.10.0.84
+pillow==10.2.0
+gradio==5.4.0
