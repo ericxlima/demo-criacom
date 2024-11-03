@@ -1,26 +1,37 @@
 from PIL import Image
 
-# Carregar as duas imagens
-imagem1 = Image.open("images/1o.png")  # Imagem 1920x1440
-imagem2 = Image.open("images/1g.png")  # Imagem 704x512
+def make_collage(path_img1, path_img2, uuid, altura_final=1024):
+    # Carregar as duas imagens
+    imagem1 = Image.open(path_img1)
+    imagem2 = Image.open(path_img2)
 
-# Redimensionar a primeira imagem para 704px de largura, mantendo o aspect ratio
-nova_largura = 704
-proporcao = nova_largura / imagem1.width
-nova_altura = int(imagem1.height * proporcao)
-imagem1 = imagem1.resize((nova_largura, nova_altura))
+    # Definir a largura da colagem como a largura da menor imagem
+    largura_colagem = min(imagem1.width, imagem2.width)
 
-# Calcular a altura total para a colagem (precisamos de 1024 de altura)
-altura_total = 1024
+    # Redimensionar a primeira imagem para a largura da menor imagem, mantendo o aspecto
+    proporcao = largura_colagem / imagem1.width
+    nova_altura_imagem1 = int(imagem1.height * proporcao)
+    imagem1 = imagem1.resize((largura_colagem, nova_altura_imagem1))
 
-# Criar uma nova imagem com 704x1024 e fundo branco
-imagem_final = Image.new("RGB", (nova_largura, altura_total), "white")
+    # Calcular a altura total necessária para a colagem
+    altura_total = nova_altura_imagem1 + imagem2.height
 
-# Colar a primeira imagem no topo da imagem final
-imagem_final.paste(imagem1, (0, 0))
+    # Determinar a altura da colagem com base no parâmetro `altura_final`
+    altura_colagem = min(altura_total, altura_final)
 
-# Colar a segunda imagem logo abaixo da primeira
-imagem_final.paste(imagem2, (0, imagem1.height))
+    # Criar uma nova imagem com a largura da menor imagem e altura especificada
+    imagem_final = Image.new("RGB", (largura_colagem, altura_colagem), "white")
 
-# Salvar o resultado
-imagem_final.save("images/ARENA IA - CIn - Colagens/colagem_final.jpg")
+    # Colar a primeira imagem no topo da colagem
+    imagem_final.paste(imagem1, (0, 0))
+
+    # Colar a segunda imagem logo abaixo da primeira, se houver espaço suficiente
+    posicao_imagem2 = nova_altura_imagem1
+    if posicao_imagem2 < altura_colagem:
+        imagem_final.paste(imagem2, (0, posicao_imagem2))
+
+    # Salvar o resultado no diretório especificado com o UUID fornecido
+    imagem_final.save(f"images/ARENA IA - CIn - Colagens/{uuid}_collage.jpg")
+    print(f"Colagem criada e salva como '{uuid}_collage.jpg'")
+
+make_collage("images/2c83d100-0d8d-4983-82da-7c0a7df723c7original.png", "images/2c83d100-0d8d-4983-82da-7c0a7df723c7.png", "2c83d100-0d8d-4983-82da-7c0a7df723c7", 1024)
